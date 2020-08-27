@@ -22,6 +22,18 @@ export default class UserList extends Component {
     this.state = {
       checkOrder: true,
       search:'',
+      calls1: [
+        { id: 1, name: "Mark Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
+        { id: 2, name: "Clark Man", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar6.png" },
+        { id: 3, name: "Jaden Boor", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar5.png" },
+        { id: 4, name: "Srick Tree", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
+        { id: 5, name: "Erick Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar3.png" },
+        { id: 6, name: "Francis Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar2.png" },
+        { id: 8, name: "Matilde Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
+        { id: 9, name: "John Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
+        { id: 10, name: "Fermod Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
+        { id: 11, name: "Danny Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
+      ],
       calls: [
         { id: 1, name: "Mark Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
         { id: 2, name: "Clark Man", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar6.png" },
@@ -55,7 +67,13 @@ export default class UserList extends Component {
       </TouchableOpacity>
     );
   }
-
+  filterByValue(array, value) {
+    console.log(value);
+    if(value){
+      return array.filter((data) =>  JSON.stringify(data).toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    }
+    return this.state.calls
+  }
   render() {
     return (
       <View >
@@ -66,9 +84,19 @@ export default class UserList extends Component {
               ref={'txtSearch'}
               placeholder="Search"
               underlineColorAndroid='transparent'
-              onChangeText={(search) => this.setState({ search:search },()=>{
-                console.log(this.state);
-              })} />
+              onChangeText={(search) => {
+                if(search){
+                  var data=this.filterByValue(this.state.calls,search)
+                  this.setState({calls:data})
+                }
+                else{
+                  console.log('*************');
+                    this.setState({
+                      calls:this.state.calls1
+                    })
+                }
+              
+              }} />
             <TouchableOpacity onPress={()=>{
               // let checkType=this.state.checkOrder ? false : true
               // console.log(checkType);

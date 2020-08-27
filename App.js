@@ -32,21 +32,27 @@
 
 
 import React from 'react'
-import { View, Text } from 'react-native'
-// import Router from './MainNavigator/MainNavigator'
-import { Provider } from 'react-redux'
-import { store } from './store'
 import { YellowBox} from "react-native";
-import MainNavigator from './MainNavigator/MainNavigator'
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import UserList from './Screen/UserList';
+import UserDetail from './Screen/UserDetail';
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
+YellowBox.ignoreWarnings(["Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s, the componentWillUnmount method"]);
 YellowBox.ignoreWarnings(["Remote debugger"]);
-
 export default function App() {
-
+  const Stack = createStackNavigator();
   return (
-    <Provider store={store}>
-      <MainNavigator></MainNavigator>
-    </Provider>
-  )
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName='UserList'
+      >
+        <Stack.Screen name='UserList' component={UserList} />
+        <Stack.Screen name='UserDetail' component={UserDetail} />
+        
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 

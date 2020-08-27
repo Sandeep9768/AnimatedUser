@@ -1,27 +1,10 @@
-// import React from 'react';
+
 import axios from 'axios'
-const baseUrl="https://jsonplaceholder.typicode.com/posts"
+const baseUrl="https://run.mocky.io/v3/e6daf7f7-9ec2-42cf-b221-ef64f1c0c6a5"
 
  class BlogService {
-
-    static postApi(method,data,endPoint){
-        return fetch(baseUrl+endPoint, {
-            method: method || 'GET',
-            body: JSON.stringify(data),
-            headers: {
-              "Content-type": "application/json; charset=UTF-8"
-            }
-          }) 
-    }
-
-    static getApi(url){
-        return axios.get(baseUrl + url);   
-    }
-
-    static deleteApi(id){
-       return fetch(`${baseUrl}/${id}`, {
-        method: 'DELETE',
-        })
+    static getApi(){
+        return axios.get(baseUrl);   
     }
 }
 

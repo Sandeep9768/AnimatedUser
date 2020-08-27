@@ -5,62 +5,51 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Alert,
   ScrollView,
   FlatList,
   TextInput,
-
+  SafeAreaView,
+  ActivityIndicator
 } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-
+import BlogService from '../Service.js/Service';
 export default class UserList extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       checkOrder: true,
-      search:'',
-      calls1: [
-        { id: 1, name: "Mark Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
-        { id: 2, name: "Clark Man", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar6.png" },
-        { id: 3, name: "Jaden Boor", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar5.png" },
-        { id: 4, name: "Srick Tree", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
-        { id: 5, name: "Erick Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar3.png" },
-        { id: 6, name: "Francis Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar2.png" },
-        { id: 8, name: "Matilde Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
-        { id: 9, name: "John Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
-        { id: 10, name: "Fermod Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
-        { id: 11, name: "Danny Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
-      ],
-      calls: [
-        { id: 1, name: "Mark Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
-        { id: 2, name: "Clark Man", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar6.png" },
-        { id: 3, name: "Jaden Boor", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar5.png" },
-        { id: 4, name: "Srick Tree", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
-        { id: 5, name: "Erick Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar3.png" },
-        { id: 6, name: "Francis Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar2.png" },
-        { id: 8, name: "Matilde Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
-        { id: 9, name: "John Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
-        { id: 10, name: "Fermod Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar7.png" },
-        { id: 11, name: "Danny Doe", status: "active", image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
-      ]
+      search: '',
+      userList: null,
+      originalList: null
     };
   }
 
+  componentDidMount() {
+    BlogService.getApi().then(res => {
+      this.setState({
+        userList: res.data,
+        originalList: res.data
+      })
+    })
+
+  }
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>{
+        this.props.navigation.navigate('UserDetail',{item})
+      }}>
         <View style={styles.row}>
-          <Image source={{ uri: item.image }} style={styles.pic} />
+          <Image source={{ uri: item.picture }} style={styles.pic} />
           <View>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
-              <Text style={styles.mblTxt}>Mobile</Text>
+              <Text style={styles.nameTxt} numberOfLines={1} ellipsizeMode="tail">{item.firstname}</Text>
+              <Text style={styles.mblTxt}>{item.age}</Text>
             </View>
-            <View style={styles.msgContainer}>
-              <Text style={styles.msgTxt}>{item.status}</Text>
+            <View style={styles.emailContainer}>
+              <Text style={styles.emailTxt}>{item.email}</Text>
             </View>
           </View>
         </View>
@@ -68,61 +57,102 @@ export default class UserList extends Component {
     );
   }
   filterByValue(array, value) {
-    console.log(value);
-    if(value){
-      return array.filter((data) =>  JSON.stringify(data).toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    if (value) {
+      return array.filter((data) => JSON.stringify(data).toLowerCase().indexOf(value.toLowerCase()) !== -1);
     }
     return this.state.calls
   }
   render() {
     return (
-      <View >
+      <View style={{flex:1,backgroundColor: "#eeeaea"}}>
         <View style={styles.formContent}>
           <View style={styles.inputContainer}>
             <EvilIcons name="search" size={24} color="black" />
             <TextInput style={styles.inputs}
-              ref={'txtSearch'}
               placeholder="Search"
               underlineColorAndroid='transparent'
               onChangeText={(search) => {
-                if(search){
-                  var data=this.filterByValue(this.state.calls,search)
-                  this.setState({calls:data})
+                if (search) {
+                  var data = this.filterByValue(this.state.userList, search)
+                  this.setState({ userList: data })
+                }
+                else {
+                  this.setState({
+                    userList: this.state.originalList
+                  })
+                }
+
+              }} />
+            <TouchableOpacity onPress={() => {
+              this.setState({ checkOrder: !this.state.checkOrder }, () => {
+                if(this.state.checkOrder){
+                  this.state.userList.sort((a, b) => a - b).reverse()  
+                  this.setState({ userList:this.state.userList })
                 }
                 else{
-                  console.log('*************');
-                    this.setState({
-                      calls:this.state.calls1
-                    })
+                  this.state.userList.sort((a, b) => a - b).reverse()    
+                  this.setState({ userList:this.state.userList })
+                  
                 }
-              
-              }} />
-            <TouchableOpacity onPress={()=>{
-              // let checkType=this.state.checkOrder ? false : true
-              // console.log(checkType);
-              this.setState({checkOrder:!this.state.checkOrder},()=>{
-                console.log(this.state);
               })
             }}>
               {
-                this.state.checkOrder ? <MaterialCommunityIcons name="sort-ascending" size={24} color="black" /> : <FontAwesome name="sort-amount-desc" size={24} color="black" />
+                this.state.checkOrder ? <MaterialCommunityIcons name="sort-ascending" size={30} color="black" /> : <FontAwesome name="sort-amount-desc" size={22} color="black" />
               }
             </TouchableOpacity>
           </View>
         </View>
-        <FlatList
-          extraData={this.state}
-          data={this.state.calls}
-          keyExtractor={(item) => {
-            return item.id;
-          }}
-          renderItem={this.renderItem} />
+        <SafeAreaView style={{ flex: 10 ,marginTop:20}}>
+          {
+            this.state.userList ? <ScrollView >
+              <FlatList
+                extraData={this.state}
+                data={this.state.userList}
+                keyExtractor={(item) => {
+                  return item.index.toString() ;
+                }}
+                renderItem={this.renderItem} />
+            </ScrollView> : <ActivityIndicator size="large" />
+          }
+        </SafeAreaView>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+
+  formContent: {
+    flexDirection: 'row',
+    flex: 1,
+    marginTop:30
+
+  },
+  inputContainer: {
+    borderRadius: 30,
+    height: 45,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    margin: 10,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  iconBtnSearch: {
+    alignSelf: 'center'
+  },
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+  },
+  inputIcon: {
+    marginLeft: 15,
+    justifyContent: 'center'
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -153,45 +183,14 @@ const styles = StyleSheet.create({
     color: '#777',
     fontSize: 13,
   },
-  msgContainer: {
+  emailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  msgTxt: {
+  emailTxt: {
     fontWeight: '400',
     color: '#008B8B',
     fontSize: 12,
     marginLeft: 15,
-  },
-
-
-  formContent: {
-    flexDirection: 'row',
-
-  },
-  inputContainer: {
-    borderRadius: 30,
-    height: 45,
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    margin: 10,
-  },
-  icon: {
-    width: 30,
-    height: 30,
-  },
-  iconBtnSearch: {
-    alignSelf: 'center'
-  },
-  inputs: {
-    height: 45,
-    marginLeft: 16,
-    borderBottomColor: '#FFFFFF',
-    flex: 1,
-  },
-  inputIcon: {
-    marginLeft: 15,
-    justifyContent: 'center'
   },
 }); 

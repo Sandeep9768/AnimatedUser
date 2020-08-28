@@ -14,8 +14,10 @@ import {
 import { EvilIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import BlogService from '../Service.js/Service';
-export default class UserList extends Component {
+import Service from '../Service/Service';
+import { connect } from 'react-redux';
+
+class UserList extends Component {
 
   constructor(props) {
     super(props);
@@ -26,9 +28,16 @@ export default class UserList extends Component {
       originalList: null
     };
   }
-
+  componentDidUpdate() {
+    this.abc()
+  }
+ 
   componentDidMount() {
-    BlogService.getApi().then(res => {
+
+    Service.getApi().then(res => {
+      res.data.sort((a, b) =>
+        a.firstname.localeCompare(b.firstname))
+      
       this.setState({
         userList: res.data,
         originalList: res.data
@@ -38,8 +47,8 @@ export default class UserList extends Component {
   }
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={()=>{
-        this.props.navigation.navigate('UserDetail',{item})
+      <TouchableOpacity onPress={() => {
+        this.props.navigation.navigate('UserDetail', { item })
       }}>
         <View style={styles.row}>
           <Image source={{ uri: item.picture }} style={styles.pic} />
@@ -64,7 +73,7 @@ export default class UserList extends Component {
   }
   render() {
     return (
-      <View style={{flex:1,backgroundColor: "#eeeaea"}}>
+      <View style={{ flex: 1, backgroundColor: "#eeeaea" }}>
         <View style={styles.formContent}>
           <View style={styles.inputContainer}>
             <EvilIcons name="search" size={24} color="black" />
@@ -85,14 +94,16 @@ export default class UserList extends Component {
               }} />
             <TouchableOpacity onPress={() => {
               this.setState({ checkOrder: !this.state.checkOrder }, () => {
-                if(this.state.checkOrder){
-                  this.state.userList.sort((a, b) => a - b).reverse()  
-                  this.setState({ userList:this.state.userList })
+                if (this.state.checkOrder) {
+                  this.state.userList.sort((a, b) =>
+                    a.firstname.localeCompare(b.firstname)
+                  )
+                  this.setState({ userList: this.state.userList })
                 }
-                else{
-                  this.state.userList.sort((a, b) => a - b).reverse()    
-                  this.setState({ userList:this.state.userList })
-                  
+                else {
+                  this.state.userList.sort((a, b) => a - b).reverse()
+                  this.setState({ userList: this.state.userList })
+
                 }
               })
             }}>
@@ -102,14 +113,14 @@ export default class UserList extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <SafeAreaView style={{ flex: 10 ,marginTop:20}}>
+        <SafeAreaView style={{ flex: 10, marginTop: 20 }}>
           {
             this.state.userList ? <ScrollView >
               <FlatList
                 extraData={this.state}
                 data={this.state.userList}
                 keyExtractor={(item) => {
-                  return item.index.toString() ;
+                  return item.index.toString();
                 }}
                 renderItem={this.renderItem} />
             </ScrollView> : <ActivityIndicator size="large" />
@@ -125,7 +136,7 @@ const styles = StyleSheet.create({
   formContent: {
     flexDirection: 'row',
     flex: 1,
-    marginTop:30
+    marginTop: 30
 
   },
   inputContainer: {
@@ -193,4 +204,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginLeft: 15,
   },
-}); 
+});
+const mapStateToProps = (state) => {
+  return { user: state };
+};
+export default connect(mapStateToProps, null)(
+  UserList
+);

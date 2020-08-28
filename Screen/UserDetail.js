@@ -15,6 +15,7 @@ export default class UserDetail extends Component {
   }
 
   componentDidMount() {
+    
     Animated.timing(this.state.startView, {
       toValue: this.state.endValue,
       duration: this.state.duration,
@@ -97,7 +98,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#eeeaea",
   },
   square: {
-    backgroundColor: "blue",
     borderRadius: 50,
   },
   downView: {

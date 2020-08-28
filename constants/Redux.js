@@ -1,7 +1,7 @@
-export const ADD_BLOG = 'ADD_BLOG';
-export const LOAD_BLOG = 'LOAD_BLOG';
-export const UPDATE_BLOG = 'UPDATE_BLOG';
-export const REMOVE_BLOG = 'REMOVE_BLOG';
+export const ADD_USER = 'ADD_USER';
+export const LOAD_USER = 'LOAD_USER';
+export const UPDATE_USER = 'UPDATE_USER';
+export const REMOVE_USER = 'REMOVE_USER';
 export const SUCCESS = 'SUCCESS';
 export const ERROR = 'ERROR';
 export const CLEAR = 'CLEAR';

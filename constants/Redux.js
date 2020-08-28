@@ -4,4 +4,3 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const REMOVE_USER = 'REMOVE_USER';
 export const SUCCESS = 'SUCCESS';
 export const ERROR = 'ERROR';
-export const CLEAR = 'CLEAR';

@@ -10,7 +10,6 @@ export const userReducer = (state = [], action) => {
       user = [...state, { ...action.payload }];
       break;
     case LOAD_USER:
-      console.log("$$$$$$$$$$$$$$$$$$",action.payload);
       user = [...state, ...action.payload ];
     break;
     case UPDATE_USER:
@@ -27,6 +26,6 @@ export const userReducer = (state = [], action) => {
     default:
       return state;
   }
-  // AsyncStorage.setItem('blogs', JSON.stringify(blogs));
+  // AsyncStorage.setItem('user', JSON.stringify(user));
   return user;
 }

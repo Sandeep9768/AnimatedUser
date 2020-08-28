@@ -8,8 +8,8 @@ export default class UserDetail extends Component {
       userDetails: this.props.route.params.item,
       startView: new Animated.ValueXY(0, 0),
       endView: new Animated.ValueXY(0, 0),
-      endValue: height / 2 - 230,
-      endValue1: -height / 5,
+      startValue: height / 2 - 230,
+      endValue: -height / 5,
       duration: 500,
     };
   }
@@ -17,12 +17,12 @@ export default class UserDetail extends Component {
   componentDidMount() {
     
     Animated.timing(this.state.startView, {
-      toValue: this.state.endValue,
+      toValue: this.state.startValue,
       duration: this.state.duration,
       useNativeDriver: true,
     }).start();
     Animated.timing(this.state.endView, {
-      toValue: this.state.endValue1,
+      toValue: this.state.endValue,
       duration: this.state.duration,
       useNativeDriver: true,
     }).start();

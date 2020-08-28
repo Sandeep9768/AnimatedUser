@@ -29,7 +29,6 @@ class UserList extends Component {
     };
   }
   componentDidUpdate() {
-    this.abc()
   }
  
   componentDidMount() {
